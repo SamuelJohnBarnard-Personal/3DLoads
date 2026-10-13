@@ -1,0 +1,6 @@
+@_3DLoads.Api_HostAddress = http://localhost:5194
+
+GET {{_3DLoads.Api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

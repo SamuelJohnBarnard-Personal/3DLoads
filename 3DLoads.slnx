@@ -1,0 +1,12 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/3DLoads.Api/3DLoads.Api.csproj" />
+    <Project Path="src/3DLoads.Application/3DLoads.Application.csproj" />
+    <Project Path="src/3DLoads.Domain/3DLoads.Domain.csproj" />
+    <Project Path="src/3DLoads.Infrastructure/3DLoads.Infrastructure.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/3DLoads.Tests.Integration/3DLoads.Tests.Integration.csproj" />
+    <Project Path="tests/3DLoads.Tests.Unit/3DLoads.Tests.Unit.csproj" />
+  </Folder>
+</Solution>

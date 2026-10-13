@@ -1,0 +1,27 @@
+<div class="viewer-shell">
+  <canvas
+    #canvas
+    class="viewer-canvas"
+    aria-label="3D van loading visualization"
+    (pointermove)="onPointerMove($event)"
+    (pointerleave)="clearHoverCard()"></canvas>
+
+  <div
+    class="viewer-label"
+    *ngFor="let label of labels"
+    [style.left.px]="label.x"
+    [style.top.px]="label.y"
+    [style.border-color]="label.color"
+    [style.display]="label.visible ? 'block' : 'none'">
+    {{ label.text }}
+  </div>
+
+  <div class="viewer-tooltip" *ngIf="hoverCard" [style.left.px]="hoverCard.x" [style.top.px]="hoverCard.y">
+    <span class="swatch" [style.background]="hoverCard.color"></span>
+    <div>
+      <strong>{{ hoverCard.title }}</strong>
+      <p>{{ hoverCard.subtitle }}</p>
+      <p>{{ hoverCard.detail }}</p>
+    </div>
+  </div>
+</div>

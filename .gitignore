@@ -1,0 +1,22 @@
+# .NET build output
+**/bin/
+**/obj/
+**/TestResults/
+*.csproj.user
+*.suo
+.vs/
+
+# Angular build and dependency output
+**/node_modules/
+**/dist/
+**/.angular/
+**/coverage/
+
+# Local environment and secrets
+.env
+.env.*
+!.env.example
+
+# OS files
+Thumbs.db
+.DS_Store
