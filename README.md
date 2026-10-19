@@ -1,3 +1,7 @@
+## What is this project?
+
+This is a project that arranges https://en.wikipedia.org/wiki/Bin_packing_problem
+
 ## How to Run
 
 Prerequisites: Node.js/npm and the .NET 8 SDK.
