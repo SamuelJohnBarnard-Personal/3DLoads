@@ -1,0 +1,53 @@
+<article class="package-card">
+  <div class="package-card-header">
+    <h3>Package {{ index + 1 }}</h3>
+    <button type="button" class="danger-button" [disabled]="disabled" (click)="remove.emit()">
+      Remove
+    </button>
+  </div>
+
+  <div class="grid-2">
+    <label>
+      Label
+      <input [(ngModel)]="package.externalReference" autocomplete="off" />
+    </label>
+    <label>
+      Stop group
+      <input [(ngModel)]="package.deliveryStopIndex" type="number" min="1" />
+    </label>
+  </div>
+
+  <div class="grid-3">
+    <label>
+      Length
+      <input [(ngModel)]="package.length" type="number" min="0.1" />
+    </label>
+    <label>
+      Width
+      <input [(ngModel)]="package.width" type="number" min="0.1" />
+    </label>
+    <label>
+      Height
+      <input [(ngModel)]="package.height" type="number" min="0.1" />
+    </label>
+  </div>
+
+  <div class="grid-3">
+    <label>
+      Weight
+      <input [(ngModel)]="package.weight" type="number" min="0.1" />
+    </label>
+    <label>
+      Max load bearing
+      <input [(ngModel)]="package.maxLoadBearingWeight" type="number" min="0" />
+    </label>
+    <label>
+      Orientation
+      <select [(ngModel)]="package.orientationPolicy">
+        <option *ngFor="let option of orientationOptions" [ngValue]="option.value">
+          {{ option.label }}
+        </option>
+      </select>
+    </label>
+  </div>
+</article>

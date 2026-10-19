@@ -16,7 +16,7 @@ public sealed class FinalValidationPhase(ISolutionValidator solutionValidator) :
         var beforeUnpacked = state.UnpackedItems.Count;
         var beforeUtilization = CalculateVolumeUtilizationPercent(state);
 
-        var report = solutionValidator.Validate(state, cancellationToken, context);
+        var report = solutionValidator.Validate(state, cancellationToken, context); //checks soln is valid
         state.ValidationErrors.Clear();
         state.ValidationErrors.AddRange(report.Errors);
         state.IsValid = report.IsValid;

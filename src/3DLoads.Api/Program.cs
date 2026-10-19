@@ -1,114 +1,90 @@
-// Entry point: configures the ASP.NET Core host, wires up JWT bearer authentication,
-// Swagger UI with Bearer token support, Serilog request logging, and EF Core (auto-creates
-// the database schema on startup via EnsureCreated for local development).
-
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi.Models;
-using Serilog;
-using System.Text;
+using System.Text.Json;
 using ThreeDLoads.Application;
-using ThreeDLoads.Infrastructure;
-using ThreeDLoads.Infrastructure.Persistence;
+using ThreeDLoads.Application.Abstractions;
+using ThreeDLoads.Application.Models;
+using ThreeDLoads.Api.Contracts;
+using ThreeDLoads.Domain.Entities;
+using ThreeDLoads.Domain.Enums;
 
 var builder = WebApplication.CreateBuilder(args);
-
-builder.Host.UseSerilog((context, config) =>
-{
-    config.ReadFrom.Configuration(context.Configuration)
-          .WriteTo.Console();
-});
-
-builder.Services.AddControllers();
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(options =>
-{
-    options.SwaggerDoc("v1", new OpenApiInfo
-    {
-        Title = "3DLoads API",
-        Version = "v1"
-    });
-
-    options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
-    {
-        Name = "Authorization",
-        Type = SecuritySchemeType.Http,
-        Scheme = "bearer",
-        BearerFormat = "JWT",
-        In = ParameterLocation.Header,
-        Description = "Enter a valid JWT bearer token."
-    });
-
-    options.AddSecurityRequirement(new OpenApiSecurityRequirement
-    {
-        {
-            new OpenApiSecurityScheme
-            {
-                Reference = new OpenApiReference
-                {
-                    Type = ReferenceType.SecurityScheme,
-                    Id = "Bearer"
-                }
-            },
-            Array.Empty<string>()
-        }
-    });
-});
 builder.Services.AddApplicationServices();
-builder.Services.AddInfrastructureServices(builder.Configuration);
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy("FrontendDev", policy =>
-    {
-        policy
-            .AllowAnyHeader()
-            .AllowAnyMethod()
-            .SetIsOriginAllowed(_ => true)
-            .AllowCredentials();
-    });
-});
-
-var jwtKey = builder.Configuration["Jwt:Key"] ?? "replace-with-a-long-random-key-for-local-dev";
-var signingKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey));
-
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-    .AddJwtBearer(options =>
-    {
-        options.TokenValidationParameters = new TokenValidationParameters
-        {
-            ValidateIssuer = true,
-            ValidateAudience = true,
-            ValidateIssuerSigningKey = true,
-            ValidateLifetime = true,
-            ValidIssuer = builder.Configuration["Jwt:Issuer"],
-            ValidAudience = builder.Configuration["Jwt:Audience"],
-            IssuerSigningKey = signingKey,
-            ClockSkew = TimeSpan.FromMinutes(1)
-        };
-    });
-
-builder.Services.AddAuthorization();
 
 var app = builder.Build();
 
-if (app.Environment.IsDevelopment())
+app.MapGet("/health", () => Results.Ok(new { status = "ready" }));
+app.MapPost("/api/v1/solve", async (
+    RunSolveRequest request,
+    ISolverService solver,
+    CancellationToken cancellationToken) =>
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+    var input = request.Scenario;
+    if (string.IsNullOrWhiteSpace(input.Name) ||
+        string.IsNullOrWhiteSpace(input.Van.Name) ||
+        input.Packages.Count == 0 ||
+        input.Van.Length <= 0 || input.Van.Width <= 0 || input.Van.Height <= 0 ||
+        input.Van.MaxPayloadWeight <= 0)
+    {
+        return Results.BadRequest("A named scenario, valid van, and at least one package are required.");
+    }
 
-using (var scope = app.Services.CreateScope())
-{
-    var db = scope.ServiceProvider.GetRequiredService<LoadsDbContext>();
-    db.Database.EnsureCreated();
-}
+    var van = new Van
+    {
+        Id = input.Van.Id,
+        Name = input.Van.Name,
+        Length = input.Van.Length,
+        Width = input.Van.Width,
+        Height = input.Van.Height,
+        MaxPayloadWeight = input.Van.MaxPayloadWeight
+    };
+    var scenario = new Scenario
+    {
+        Id = input.Id,
+        Name = input.Name,
+        Van = van,
+        VanId = van.Id
+    };
+    scenario.Packages = input.Packages.Select(package => new PackageItem
+    {
+        Id = package.Id,
+        ScenarioId = scenario.Id,
+        Scenario = scenario,
+        ExternalReference = package.ExternalReference,
+        Length = package.Length,
+        Width = package.Width,
+        Height = package.Height,
+        Weight = package.Weight,
+        DeliveryStopIndex = package.DeliveryStopIndex,
+        OrientationPolicy = (OrientationPolicy)package.OrientationPolicy,
+        MaxLoadBearingWeight = package.MaxLoadBearingWeight
+    }).ToList();
 
-app.UseSerilogRequestLogging();
-app.UseHttpsRedirection();
-app.UseCors("FrontendDev");
-app.UseAuthentication();
-app.UseAuthorization();
-app.MapControllers();
+    var solution = await solver.SolveAsync(scenario, new SolveExecutionContext
+    {
+        PhaseNames = ["InitialGreedy", "Brkga", "Cleanup", "FinalValidation"],
+        TimeBudget = TimeSpan.FromSeconds(5)
+    }, cancellationToken);
+
+    return Results.Ok(new SolutionResponse
+    {
+        Id = solution.Id,
+        ScenarioId = solution.ScenarioId,
+        VolumeUtilizationPercent = solution.VolumeUtilizationPercent,
+        UnpackedItemCount = solution.UnpackedItemCount,
+        UnpackedVolume = solution.UnpackedVolume,
+        IsValid = solution.IsValid,
+        ValidationErrors = JsonSerializer.Deserialize<IReadOnlyList<string>>(solution.ValidationErrorsJson) ?? [],
+        Placements = solution.Placements.Select(placement => new PlacementResponse
+        {
+            PackageItemId = placement.PackageItemId,
+            X = placement.X,
+            Y = placement.Y,
+            Z = placement.Z,
+            OrientedLength = placement.OrientedLength,
+            OrientedWidth = placement.OrientedWidth,
+            OrientedHeight = placement.OrientedHeight
+        }).ToList()
+    });
+});
 
 app.Run();
 

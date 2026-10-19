@@ -1,0 +1,98 @@
+:host {
+  display: block;
+}
+
+.package-card {
+  padding: 0.85rem;
+  border-radius: 0;
+  background: #eff8ed;
+  border: 1px solid #111;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.package-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.package-card-header h3 {
+  margin: 0;
+  font-family: 'Space Grotesk', 'Segoe UI', sans-serif;
+}
+
+.grid-2,
+.grid-3 {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.grid-2 {
+  grid-template-columns: 1fr 1fr;
+}
+
+.grid-3 {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  min-width: 0;
+  font-weight: 600;
+  color: #334e68;
+  font-size: 0.86rem;
+}
+
+input,
+select {
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+  border: 1px solid #111;
+  border-radius: 0;
+  padding: 0.6rem 0.65rem;
+  font-size: 0.95rem;
+  background: #fff;
+}
+
+input:focus,
+select:focus {
+  outline: 2px solid #111;
+  outline-offset: 1px;
+}
+
+button {
+  border: 1px solid #111;
+  border-radius: 0;
+  padding: 0.6rem 0.8rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.danger-button {
+  background: #fde8e8;
+  color: #111;
+  padding-inline: 0.7rem;
+}
+
+@media (max-width: 540px) {
+  .grid-2,
+  .grid-3 {
+    grid-template-columns: 1fr;
+  }
+
+  .package-card-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}

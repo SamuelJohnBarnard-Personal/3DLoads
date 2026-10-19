@@ -1,0 +1,76 @@
+<section class="control-panel">
+  <section class="subsection scenario-editor">
+    <div class="subsection-header">
+      <h2>Scenario</h2>
+      <div class="action-row">
+        <button type="button" class="ghost-button" [disabled]="busy" (click)="loadDemo.emit()">
+          Load Demo
+        </button>
+        <button type="button" class="ghost-button" [disabled]="busy" (click)="resetDemo.emit()">
+          Reset
+        </button>
+        <button type="button" class="ghost-button" [disabled]="busy" (click)="addPackage.emit()">
+          Add Package
+        </button>
+      </div>
+    </div>
+
+    <label>
+      Scenario name
+      <input [(ngModel)]="scenario.name" autocomplete="off" />
+    </label>
+
+    <div class="grid-2">
+      <label>
+        Van name
+        <input [(ngModel)]="scenario.van.name" autocomplete="off" />
+      </label>
+      <label>
+        Max payload
+        <input [(ngModel)]="scenario.van.maxPayloadWeight" type="number" min="0.1" />
+      </label>
+    </div>
+
+    <div class="grid-3">
+      <label>
+        Van length
+        <input [(ngModel)]="scenario.van.length" type="number" min="0.1" />
+      </label>
+      <label>
+        Van width
+        <input [(ngModel)]="scenario.van.width" type="number" min="0.1" />
+      </label>
+      <label>
+        Van height
+        <input [(ngModel)]="scenario.van.height" type="number" min="0.1" />
+      </label>
+    </div>
+
+    <app-package-list
+      [packages]="scenario.packages"
+      [disabled]="busy"
+      (removePackage)="removePackage.emit($event)"
+    >
+    </app-package-list>
+  </section>
+
+  <section class="subsection">
+    <h2>Solver</h2>
+    <button class="run-button" type="button" [disabled]="busy" (click)="runSolve.emit()">
+      {{ busy ? 'Solving...' : 'Run Solve' }}
+    </button>
+    <p class="status" *ngIf="busy">solving may take up to 10 seconds</p>
+  </section>
+
+  <p class="status" *ngIf="statusMessage">{{ statusMessage }}</p>
+  <p class="error" *ngIf="errorMessage">{{ errorMessage }}</p>
+
+  <section class="metrics" *ngIf="solution">
+    <h2>Solution Metrics</h2>
+    <p>Utilization: {{ solution.volumeUtilizationPercent | number: '1.1-2' }}%</p>
+    <p>Unpacked items: {{ solution.unpackedItemCount }}</p>
+    <p>Placed items: {{ solution.placements.length }}</p>
+    <p>Valid: {{ solution.isValid ? 'Yes' : 'No' }}</p>
+    <p *ngFor="let error of solution.validationErrors" class="error">{{ error }}</p>
+  </section>
+</section>

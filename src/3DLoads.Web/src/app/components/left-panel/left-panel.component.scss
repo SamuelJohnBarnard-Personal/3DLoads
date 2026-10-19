@@ -1,0 +1,161 @@
+:host {
+  display: flex;
+  min-width: 0;
+  min-height: 0;
+}
+
+.control-panel {
+  padding: 1rem;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 0.85rem;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+.subsection {
+  padding: 0.9rem;
+  border: 1px solid #111;
+  border-radius: 0;
+  background: #fff;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.subsection h2 {
+  margin: 0;
+  font-family: 'Space Grotesk', 'Segoe UI', sans-serif;
+}
+
+.subsection-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.scenario-editor {
+  flex: 0 0 auto;
+  gap: 0.9rem;
+}
+
+label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  min-width: 0;
+  font-weight: 600;
+  color: #334e68;
+  font-size: 0.86rem;
+}
+
+input {
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+  border: 1px solid #111;
+  border-radius: 0;
+  padding: 0.6rem 0.65rem;
+  font-size: 0.95rem;
+  background: #fffdf7;
+}
+
+input:focus {
+  outline: 2px solid #111;
+  outline-offset: 1px;
+}
+
+.grid-2,
+.grid-3 {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.grid-2 {
+  grid-template-columns: 1fr 1fr;
+}
+
+.grid-3 {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.action-row {
+  display: flex;
+  gap: 0.6rem;
+}
+
+button {
+  border: 1px solid #111;
+  border-radius: 0;
+  padding: 0.6rem 0.8rem;
+  font-weight: 700;
+  color: #111;
+  background: #fff;
+  cursor: pointer;
+}
+
+button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.run-button {
+  color: #fff;
+  background: #111;
+}
+
+.ghost-button {
+  background: #e6f2fb;
+  color: #111;
+}
+
+.status {
+  margin: 0;
+  color: #111;
+  background: #fff;
+  border: 1px solid #111;
+  border-radius: 0;
+  padding: 0.5rem 0.6rem;
+}
+
+.error {
+  margin: 0;
+  color: #111;
+  background: #fff;
+  border: 1px solid #111;
+  border-radius: 0;
+  padding: 0.5rem 0.6rem;
+}
+
+.metrics {
+  margin-top: 0.2rem;
+  padding-top: 0.7rem;
+  border-top: 1px solid #111;
+}
+
+.metrics h2 {
+  margin: 0 0 0.4rem;
+  font-size: 1rem;
+}
+
+.metrics p {
+  margin: 0.24rem 0;
+}
+
+@media (max-width: 540px) {
+  .grid-2,
+  .grid-3 {
+    grid-template-columns: 1fr;
+  }
+
+  .action-row {
+    flex-direction: column;
+  }
+
+  .subsection-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}

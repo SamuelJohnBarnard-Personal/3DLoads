@@ -1,6 +1,7 @@
 using ThreeDLoads.Application.Abstractions;
 using ThreeDLoads.Application.Models;
 using ThreeDLoads.Domain.Entities;
+using System.Text.Json;
 
 namespace ThreeDLoads.Application.Services;
 
@@ -38,7 +39,9 @@ public sealed class PhasePipelineSolver(IEnumerable<IPhase> phases) : ISolverSer
             Scenario = scenario,
             VolumeUtilizationPercent = vanVolume <= 0 ? 0 : (packedVolume / vanVolume) * 100,
             UnpackedItemCount = state.UnpackedItems.Count,
-            UnpackedVolume = unpackedVolume
+            UnpackedVolume = unpackedVolume,
+            IsValid = state.IsValid,
+            ValidationErrorsJson = JsonSerializer.Serialize(state.ValidationErrors)
         };
 
         foreach (var placement in state.Placements)

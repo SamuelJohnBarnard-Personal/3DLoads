@@ -1,6 +1,6 @@
 namespace ThreeDLoads.Api.Contracts;
 
-// Full packing result returned by GET /api/v1/solve-jobs/{id}/result.
+// Packing result returned directly by POST /api/v1/solve.
 public sealed class SolutionResponse
 {
     public Guid Id { get; init; }

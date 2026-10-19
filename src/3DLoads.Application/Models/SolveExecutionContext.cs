@@ -17,5 +17,4 @@ public sealed class SolveExecutionContext
     public double? BrkgaEliteRate { get; init; }
     public double? BrkgaMutantRate { get; init; }
     public double? BrkgaEliteInheritanceProbability { get; init; }
-    public double? BrkgaPhaseBudgetRatio { get; init; }
 }

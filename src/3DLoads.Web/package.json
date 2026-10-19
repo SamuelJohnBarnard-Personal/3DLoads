@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve",
+    "start": "concurrently --kill-others --names api,web \"dotnet run --project ../3DLoads.Api --no-launch-profile -- --urls http://localhost:5195\" \"ng serve --proxy-config proxy.conf.json --host 127.0.0.1 --port 4202\"",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test"
@@ -26,6 +26,7 @@
     "@angular/cli": "^22.1.6",
     "@angular/compiler-cli": "^22.1.0",
     "@types/three": "^0.185.4",
+    "concurrently": "^10.0.5",
     "jsdom": "^28.0.0",
     "prettier": "^3.8.1",
     "typescript": "~6.0.2",

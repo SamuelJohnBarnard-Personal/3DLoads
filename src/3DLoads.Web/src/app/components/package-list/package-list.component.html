@@ -1,0 +1,10 @@
+<div class="package-list">
+  <app-package-editor
+    *ngFor="let package of packages; let index = index"
+    [package]="package"
+    [index]="index"
+    [disabled]="disabled"
+    (remove)="removePackage.emit(index)"
+  >
+  </app-package-editor>
+</div>

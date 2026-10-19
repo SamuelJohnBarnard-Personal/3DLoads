@@ -1,0 +1,18 @@
+:host {
+  display: block;
+  min-height: 10rem;
+  max-height: 28rem;
+  overflow: hidden;
+}
+
+.package-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  height: 100%;
+  min-height: 10rem;
+  max-height: 28rem;
+  box-sizing: border-box;
+  overflow: auto;
+  padding-right: 0.2rem;
+}

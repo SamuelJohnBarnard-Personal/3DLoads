@@ -1,6 +1,7 @@
 using ThreeDLoads.Application.Models;
 using ThreeDLoads.Application.Services;
 using ThreeDLoads.Application.Services.Phases;
+using ThreeDLoads.Application.Services.Phases.Brkga;
 using ThreeDLoads.Domain.Entities;
 using ThreeDLoads.Domain.Enums;
 using System.Text.Json;
@@ -165,8 +166,7 @@ public class BrkgaPhaseTests
             BrkgaMaxGenerations = 12,
             BrkgaEliteRate = 0.25,
             BrkgaMutantRate = 0.15,
-            BrkgaEliteInheritanceProbability = 0.8,
-            BrkgaPhaseBudgetRatio = 0.5
+            BrkgaEliteInheritanceProbability = 0.8
         };
 
         await phase.ExecuteAsync(state, context, CancellationToken.None);
